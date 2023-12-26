@@ -34,7 +34,7 @@ document.getElementById('signout_button').style.visibility = 'hidden';
 // }
 
 // Callback after api.js is loaded.
-window.gapiLoaded = function () {                   // Changed '= function gapiLoaded()' to '= function ()' to fix ramdom loading error
+window.gapiLoaded = function() {                   // Changed '= function gapiLoaded()' to '= function ()' to fix random loading error
     gapi.load('client', initializeGapiClient);
 }
 
@@ -175,6 +175,8 @@ window.createFolder = createFolder;  // Made global (window.) to make function a
 
 
 // *********************** Delete File ***********************
+// *** Deletes file permanently - Not trash ***
+// *** If it's a folder it deletes everything below. CAREFULL!! ***
 function deleteFile(fileId) {
     return gapi.client.drive.files.delete({
         'fileId': fileId
@@ -188,6 +190,23 @@ function deleteFile(fileId) {
     });
 }
 window.deleteFile = deleteFile;
+
+
+// *********************** Move file to trash ***********************
+function trashFile(fileId) {
+    return gapi.client.drive.files.update({
+        'fileId': fileId,
+        'trashed': true
+    })
+    .then(function(response) {
+        // Handle the results here (response.result has the parsed body).
+        console.log("File moved to trash successfully", response);
+    },
+    function(err) { 
+        console.error("Execute error", err); 
+    });
+}
+window.trashFile = trashFile;
 
 
 // *********************** Get Folder Id ***********************  
